@@ -1,0 +1,320 @@
+{
+	// Place your snippets for powershell here. Each snippet is defined under a snippet name and has a prefix, body and 
+	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
+	// same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+	"Requires Version":{
+		"prefix":"requires-version",
+		"description":"Declare a minimum acceptable PowerShell version",
+		"body":"#Requires -Version ${1:5.1}"
+	},
+	"Requires PSSnapin Name":{
+		"prefix": "requires-pssnapin",
+		"description": "Specifies a PowerShell snap-in that the script requires. Enter the snap-in name and an optional version number.",
+		"body": "#Requires -PSSnapin ${1:enter-the-pssnapin-name}"
+	},
+	"Requires PSSnapin Name and Version":{
+		"prefix": "requires-pssnapin-version",
+		"description": "Specifies a PowerShell snap-in that the script requires. Enter the snap-in name and an optional version number.",
+		"body": "#Requires -PSSnapin ${1:enter-the-pssnapin-name} -Version ${2:enter-the-pssnapin-version}"
+	},
+	"Requires Module Name":{
+		"prefix": "requires-module",
+		"description": "Specifies PowerShell modules that the script requires. Enter the module name.",
+		"body": "#Requires -Modules ${1:enter-the-module-names-comma-separated}"
+	},
+	"Requires Module Version Minimum":{
+		"prefix": "requires-module-version-min",
+		"description": "Specifies PowerShell modules that the script requires. Enter the module name and minimum version number.",
+		"body": "#Requires -Modules @{ ModuleName=\"${1:enter-the-module-name}\"; ModuleVersion=\"${2:enter-the-minimum-acceptable-version}\" }"
+	},
+	"Requires Module Version Exact":{
+		"prefix": "requires-module-version-exact",
+		"description": "Specifies PowerShell modules that the script requires. Enter the module name and required version number.",
+		"body": "#Requires -Modules @{ ModuleName=\"${1:enter-the-module-name}\"; RequiredVersion=\"${2:enter-the-exact-version}\" }"
+	},
+	"Requires Module Version Maximum":{
+		"prefix": "requires-module-version-max",
+		"description": "Specifies PowerShell modules that the script requires. Enter the module name and maximum version number.",
+		"body": "#Requires -Modules @{ ModuleName=\"${1:enter-the-module-name}\"; MaximumVersion=\"${2:enter-the-exact-version}\" }"
+	},
+	"Requires PSEdition":{
+		"prefix": "requires-psedition",
+		"description": "Specifies a PowerShell edition that the script requires. Valid values are Core for PowerShell and Desktop for Windows PowerShell.",
+		"body": "#Requires -PSEdition ${1|Core,Desktop|}"
+	},
+	"Requires Run As Administrator":{
+		"prefix": "requires-run-as-administrator",
+		"description": "Specifies that the PowerShell session in which you're running the script must be started with elevated user rights.",
+		"body": "#Requires -RunAsAdministrator"
+	},
+	"Class": {
+	  "prefix": "class",
+	  "description": "A blueprint used to create instances of objects at run time. More: Get-Help about_Classes",
+	  "body": [
+		"class ${1:ClassName} {",
+		"\t${0:${TM_SELECTED_TEXT:<#Define the class. Try constructors, properties, or methods #>}}",
+		"\t#\tConstructor:\tdefault (no arguments)",
+		"\t${1:ClassName}(){}",
+		"}"
+	  ]
+	},
+	"Function-Advanced-Pipeline": {
+		"prefix": [
+			"function-advanced",
+			"cmdlet"
+		],
+		"description": "Script advanced function definition snippet. More: Get-Help about_Functions_Advanced",
+		"body": [
+			"function ${1|Add,Clear,Close,Copy,Enter,Exit,Find,Format,Get,Hide,Join,Lock,Move,New,Open,Optimize,Pop,Push,Redo,Remove,Rename,Reset,Resize,Search,Select,Set,Show,Skip,Split,Step,Switch,Undo,Unlock,Watch,Backup,Checkpoint,Compare,Compress,Convert,ConvertFrom,ConvertTo,Dismount,Edit,Expand,Export,Group,Import,Initialize,Limit,Merge,Mount,Out,Publish,Restore,Save,Sync,Unpublish,Update,Approve,Assert,Complete,Confirm,Deny,Disable,Enable,Install,Invoke,Register,Request,Restart,Resume,Start,Stop,Submit,Suspend,Uninstall,Unregister,Wait,Debug,Measure,Ping,Repair,Resolve,Test,Trace,Connect,Disconnect,Read,Receive,Send,Write,Block,Grant,Protect,Revoke,Unblock,Unprotect,Use|}-${2:Noun} {",
+			"\t[CmdletBinding()]",
+			"\tparam (",
+			"\t\t#\t${6:Parameter help description}",
+			"\t\t[Parameter(",
+			"\t\t\tMandatory\t=\t$$true,",
+			"\t\t\tValueFromPipeline\t=\t$$true,",
+			"\t\t\tValueFromPipelineByPropertyName\t=\t$${5|true,false|}",
+			"\t\t)]",
+			"\t\t[${4:System.Object}[]]",
+			"\t\t$${3:InputObject}",
+			"\t)",
+			"\t",
+			"\tbegin {",
+			"\t\t",
+			"\t}",
+			"\t",
+			"\tprocess {",
+			"\t\tforeach ($${7:objectCurrent} in $${3:InputObject}) {",
+			"\t\t\t#\tDo something with the $${7:objectCurrent} $UUID",
+			"\t\t\t$0",
+			"\t\t}",
+			"\t}",
+			"\t",
+			"\tend {",
+			"\t\t",
+			"\t}",
+			"}"
+		]
+	},
+	"Function-Advanced-Pipeline-Unique": {
+		"prefix": [
+			"function-advanced",
+			"cmdlet"
+		],
+		"description": "Script advanced function definition snippet. More: Get-Help about_Functions_Advanced",
+		"body": [
+			"function ${1|Add,Clear,Close,Copy,Enter,Exit,Find,Format,Get,Hide,Join,Lock,Move,New,Open,Optimize,Pop,Push,Redo,Remove,Rename,Reset,Resize,Search,Select,Set,Show,Skip,Split,Step,Switch,Undo,Unlock,Watch,Backup,Checkpoint,Compare,Compress,Convert,ConvertFrom,ConvertTo,Dismount,Edit,Expand,Export,Group,Import,Initialize,Limit,Merge,Mount,Out,Publish,Restore,Save,Sync,Unpublish,Update,Approve,Assert,Complete,Confirm,Deny,Disable,Enable,Install,Invoke,Register,Request,Restart,Resume,Start,Stop,Submit,Suspend,Uninstall,Unregister,Wait,Debug,Measure,Ping,Repair,Resolve,Test,Trace,Connect,Disconnect,Read,Receive,Send,Write,Block,Grant,Protect,Revoke,Unblock,Unprotect,Use|}-${2:Noun} {",
+			"\t[CmdletBinding()]",
+			"\tparam (",
+			"\t\t#\t${6:Parameter help description}",
+			"\t\t[Parameter(",
+			"\t\t\tMandatory\t=\t$$true,",
+			"\t\t\tValueFromPipeline\t=\t$$true,",
+			"\t\t\tValueFromPipelineByPropertyName\t=\t$${5|true,false|}",
+			"\t\t)]",
+			"\t\t[${4:System.Object}[]]",
+			"\t\t$${3:InputObject}",
+			"\t)",
+			"\t",
+			"\tbegin {",
+			"\t\t[System.Collections.Generic.List[${4:System.Object}]]$${7:objectCollector}\t=\t[System.Collections.Generic.List[${4:System.Object}]]::new()",
+			"\t}",
+			"\t",
+			"\tprocess {",
+			"\t\tforeach ($$objectCurrent in $${3:InputObject}) {",
+			"\t\t\t#\tCheck if the $$objectCurrent is unique",
+			"\t\t\t[bool]$$isUnique\t=\t-not $${7:objectCollector}.Contains($$objectCurrent)",
+			"\t\t\tif\t(-not $$isUnique)\t{",
+			"\t\t\t\tcontinue",
+			"\t\t\t}",
+			"\t\t\t$${7:objectCollector}.Add($$objectCurrent)",
+			"\t\t\t#\tDo something with the $$objectCurrent",
+			"\t\t\t$0",
+			"\t\t}",
+			"\t}",
+			"\t",
+			"\tend {",
+			"\t\t",
+			"\t}",
+			"}"
+		]
+	},
+	"Parameter \"Unique\"": {
+		"prefix": [
+			"parameter-unique",
+			"unique"
+		],
+		"description": "A definition for the parameter that forces the function to process only unique objects",
+		"body": [
+			"#\tIf this parameter is specified, the cmdlet processes only unique objects.",
+			"[Parameter(",
+			"\tMandatory\t=\t$$false,",
+			"\tValueFromPipeline\t=\t$$false",
+			")]",
+			"[switch]",
+			"$$Unique"
+		]
+	},
+	"Parameter \"PassThru\"": {
+		"prefix": [
+			"parameter-passthru",
+			"passthru"
+		],
+		"description": "A definition for the parameter that forces the function to return objects after processing",
+		"body": [
+			"#\tIf this parameter is specified, the cmdlet returns the processed objects. Normally the cmdlet does not returns anything.",
+			"[Parameter(",
+			"\tMandatory\t=\t$$false,",
+			"\tValueFromPipeline\t=\t$$false",
+			")]",
+			"[switch]",
+			"$$PassThru"
+		]
+	},
+	"Module Manifest":{
+		"prefix": [
+			"module-manifest"
+		],
+		"body": [
+			"@{",
+			"\tRootModule\t\t\t\t=\t'${1:$TM_FILENAME_BASE}.psm1'",
+			"\tAuthor\t\t\t\t\t=\t'${2:Enter your name here}'",
+			"\tCompanyName\t\t\t\t=\t'${3:Contoso Inc.}'",
+			"\tModuleVersion\t\t\t=\t'${4:0.0.0.0}'",
+			"\tGUID\t\t\t\t\t=\t'$UUID'",
+			"\tCopyright\t\t\t\t=\t'$CURRENT_YEAR ${3:Contoso Inc.}}'",
+			"\tDescription\t\t\t\t=\t'${5:Enter the module description here}'",
+			"\tPowerShellVersion\t\t=\t'${6:5.1}'",
+			"\t#CompatiblePSEditions\t=\t${7|'Desktop','Core',@('Desktop'\\,'Core')|}",
+			"\t#\tList of required assemblies and modules",
+			"\t#RequiredAssemblies\t\t=\t@()",
+			"\t#RequiredModules\t\t=\t@()",
+			"\tFunctionsToExport\t\t=\t${8|'*',@()|}",
+			"\tAliasesToExport\t\t\t=\t${9|'*',@()|}",
+			"\tVariablesToExport\t\t=\t${10|'*',@()|}",
+			"\t#FormatsToProcess\t\t=\t'${1:$TM_FILENAME_BASE}.format.ps1xml'",
+			"\tPrivateData\t\t\t\t=\t@{",
+			"\t\tPSData\t\t\t\t=\t@{",
+			"\t\t\tTags\t\t\t=\t@('${11:PSModule}')",
+			"\t\t\t#LicenseUri\t\t=\t''",
+			"\t\t\t#ProjectUri\t\t=\t''",
+			"\t\t\t#IconUri\t\t=\t''",
+			"\t\t\t#\tRequired modules that cannot be downloaded from PSGallery or other NuGet repositories, should be listed as external dependencies.",
+			"\t\t\t#ExternalModuleDependencies\t=\t@(",
+			"\t\t\t#\t@{",
+			"\t\t\t#\t\tModuleName\t\t=\t'ActiveDirectory'",
+			"\t\t\t#\t\tModuleVersion\t=\t'1.0.1.0'",
+			"\t\t\t#\t\tGUID\t\t\t=\t'43c15630-959c-49e4-a977-758c5cc93408'",
+			"\t\t\t#\t}",
+			"\t\t\t#)",
+			"\t\t\tReleaseNotes\t=\t@'",
+			"$0",
+			"'@",
+			"\t\t}",
+			"\t}",
+			"\t#HelpInfoURI\t\t\t=\t''",
+			"}"
+		]
+	},
+	"Verbose Messages Declaration":{
+		"prefix": [
+			"messages-verbose"
+		],
+		"description": "Definition of message templates used for warnings, details, and debugging.",
+		"body": [
+			"#region\t\t${1:DeclareMessages}",
+			"[string]$${2:myName}\t=\t'{0}' -f $$MyInvocation.InvocationName",
+			"[string]$${3:msgError}\t=\t'{0} The operation \"{1}\"; the object: \"{2}\"; exception: \"{3}\"; message: \"{4}\"; inner exception: \"{5}\"'",
+			"#\t$${3:msgError}\t-f\t$${2:myName}, $$operationName, $$objectName, $$_.Exception.GetType().FullName, $$_.Exception.Message, $$_.Exception.InnerException",
+			"#endregion\t${1:DeclareMessages}"
+		]
+	},
+	"Function Help": {
+		"prefix": [
+			"help-function",
+			"comment-help"
+		],
+		"description": "Comment-based help for an advanced function. More: Get-Help about_Comment_Based_Help",
+		"body": [
+			"<#",
+			".SYNOPSIS",
+			"\t${1:A short one-line action-based description, e.g. 'Tests if a function is valid'}",
+			".DESCRIPTION",
+			"\t${1:A short one-line action-based description, e.g. 'Tests if a function is valid'}",
+			"\t${2:A longer description of the function, its purpose, common use cases, etc.}",
+			".EXAMPLE",
+			"\tPS C:\\> ${0:$CLIPBOARD} -Verbose",
+			"\t${6:Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines}",
+			".INPUTS",
+			"\tThe .NET types of objects that can be piped to the function or script. You can also include a description of the input objects.",
+			".OUTPUTS",
+			"\tThe .NET type of the objects that the cmdlet returns. You can also include a description of the returned objects.",
+			".NOTES",
+			"\t${3:Information or caveats about the function e.g. 'This function is not supported in Linux'}",
+			".LINK",
+			"\t${4:Specify a URI to a help page, this will show when Get-Help -Online is used.}",
+			"#>",
+			""
+		]
+	},
+	"Parameter Help":{
+		"prefix": [
+			"help-parameter",
+			"param-help"
+		],
+		"description": "The description of a parameter. Currently, VSCode does not run snippets in a comment block, so you need to run it elsewhere in the code's executable area and then manually paste the result into comment-based help.",
+		"body": [
+			".PARAMETER ${0:$CLIPBOARD}",
+			"\t${1:This parameter specifies something}"
+		]
+	},
+	"ToString as JSON":{
+		"prefix": "class-method-tostring-json",
+		"description": "Method: Overloads ToString() and returns this object as a JSON string.",
+		"body": [
+			"#\tMethod:\toverloads ToString() and returns this object as a JSON string",
+			"[string]",
+			"ToString(){",
+			"\t[string]$$outputString\t=\t$$this\t|\tConvertTo-JSON -Depth 100 -Compress",
+			"\treturn\t$$outputString",
+			"}"
+		]
+	},
+	"Equals By All Properties":{
+		"prefix": "class-method-equals-all",
+		"description": "Method: overloads Equals() and returns \"True\" if all property values of the input object are equal to the same properties of this object",
+		"body": [
+			"#\tMethod:\toverloads Equals() and returns \"True\" if all property values of the input object are equal to the same properties of this object",
+			"[bool]",
+			"Equals(",
+			"\t[System.Object]$$obj",
+			")\t{",
+			"\t[string[]]$$keysInput\t=\t$$obj.psobject.properties.name",
+			"\t[string[]]$$keysMine\t\t=\t$$this.psobject.properties.name",
+			"\tif\t(($$keysInput.Count\t-gt\t0)\t-and\t($$keysMine.Count\t-gt\t0))\t{",
+			"\t\t[string[]]$$keysCommon\t=\t[System.Linq.Enumerable]::Intersect($$keysInput,$$keysMine)",
+			"\t}",
+			"\telse\t{",
+			"\t\t[string[]]$$keysCommon\t=\t@()",
+			"\t}\t",
+			"\t[bool]$$isObjectEqual\t=\t$$keysCommon.Count\t-gt\t0",
+			"\tforeach\t($$keyCurrent\tin\t$$keysCommon)\t{",
+			"\t\t[bool]$$isObjectEqual\t=\t$$this.$$keyCurrent\t-eq\t$$obj.$$keyCurrent",
+			"\t\tif\t(-not\t$$isObjectEqual)\t{",
+			"\t\t\tbreak",
+			"\t\t}",
+			"\t}",
+			"\treturn\t$$isObjectEqual",
+			"}"
+		]
+	}
+}
