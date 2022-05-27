@@ -68,6 +68,24 @@
 		"}"
 	  ]
 	},
+	"Class Property - Type from clipboard": {
+		"prefix": "class-property-clip-typename",
+		"description": "Copy the type name of the class property to the clipboard.",
+		"body": [
+			"#\tProperty:\tstores the ${1:PropertyName} $0",
+			"[$CLIPBOARD]",
+			"$${1:PropertyName}"
+		]
+	},
+	"Class Property - Name from clipboard": {
+		"prefix": "class-property-clip-name",
+		"description": "Copy the name of the class property to the clipboard.",
+		"body": [
+			"#\tProperty:\tstores the $CLIPBOARD$0",
+			"[${1:System.Object}]",
+			"$$CLIPBOARD"
+		]
+	},
 	"Function-Advanced-Pipeline": {
 		"prefix": [
 			"function-advanced",
@@ -284,8 +302,8 @@
 			"#\tMethod:\toverloads ToString() and returns this object as a JSON string",
 			"[string]",
 			"ToString(){",
-			"\t[string]$$outputString\t=\t$$this\t|\tConvertTo-JSON -Depth 100 -Compress",
-			"\treturn\t$$outputString",
+			"\t[string]\\$outputString\t=\t\\$this\t|\tConvertTo-JSON -Depth 100 -Compress",
+			"\treturn\t\\$outputString",
 			"}"
 		]
 	},
@@ -299,7 +317,7 @@
 			"\t[System.Object]$$obj",
 			")\t{",
 			"\t[string[]]$$keysInput\t=\t$$obj.psobject.properties.name",
-			"\t[string[]]$$keysMine\t\t=\t$$this.psobject.properties.name",
+			"\t[string[]]$$keysMine\t\t=\t\\$this.psobject.properties.name",
 			"\tif\t(($$keysInput.Count\t-gt\t0)\t-and\t($$keysMine.Count\t-gt\t0))\t{",
 			"\t\t[string[]]$$keysCommon\t=\t[System.Linq.Enumerable]::Intersect($$keysInput,$$keysMine)",
 			"\t}",
@@ -308,12 +326,49 @@
 			"\t}\t",
 			"\t[bool]$$isObjectEqual\t=\t$$keysCommon.Count\t-gt\t0",
 			"\tforeach\t($$keyCurrent\tin\t$$keysCommon)\t{",
-			"\t\t[bool]$$isObjectEqual\t=\t$$this.$$keyCurrent\t-eq\t$$obj.$$keyCurrent",
+			"\t\t[bool]$$isObjectEqual\t=\t\\$this.$$keyCurrent\t-eq\t$$obj.$$keyCurrent",
 			"\t\tif\t(-not\t$$isObjectEqual)\t{",
 			"\t\t\tbreak",
 			"\t\t}",
 			"\t}",
 			"\treturn\t$$isObjectEqual",
+			"}"
+		]
+	},
+	"Compare Lists Method":{
+		"prefix": "class-method-compare-lists",
+		"description": "Method: compares the two lists of the specified type and returns the boolean comparison result",
+		"body": [
+			"#\tMethod:\tcompares the two lists of the [${1:System.Object}] type and returns the boolean comparison result",
+			"[bool]",
+			"${2:CompareLists}(",
+			"\t[${1:System.Object}[]]$${3:list1},",
+			"\t[${1:System.Object}[]]$${4:list2}",
+			")\t{",
+			"\t#\tIf both lists are empty, then lists are equal.",
+			"\tif\t(($${3:list1}.Count -eq 0) -and ($${4:list2}.Count -eq 0))\t{",
+			"\t\t[bool]\\$areEqual\t=\t\\$true",
+			"\t}",
+			"\t#\tIf the number of items in the lists is not equal, the lists are not equal.",
+			"\telseif (($${3:list1}.Count -eq 0) -or ($${4:list2}.Count -eq 0) -or ($${3:list1}.Count -ne $${4:list2}.Count)) {",
+			"\t\t[bool]\\$areEqual\t=\t\\$false",
+			"\t}",
+			"\t#\tHere we can assume that both lists have the same number of items. Select only unique elements:",
+			"\telse {",
+			"\t\t[${1:System.Object}[]]$${3:list1}Unique\t=\t[System.Linq.Enumerable]::Distinct($${3:list1})",
+			"\t\t[${1:System.Object}[]]$${4:list2}Unique\t=\t[System.Linq.Enumerable]::Distinct($${4:list2})",
+			"\t\t#\tIf the number of UNIQUE items in the lists is not equal, the lists are not equal.",
+			"\t\tif\t($${3:list1}Unique.Count -ne $${4:list2}Unique.Count)\t{",
+			"\t\t\t[bool]\\$areEqual\t=\t\\$false",
+			"\t\t}",
+			"\t\telse {",
+			"\t\t\t#\tGet elements that are present in both lists",
+			"\t\t\t[${1:System.Object}[]]\\$itemsCommon\t=\t[System.Linq.Enumerable]::Intersect($${3:list1}Unique,$${4:list2}Unique)",
+			"\t\t\t#\tIf the common elements number is not equal to the number of unique elements in the list, the lists are not equal.",
+			"\t\t\t[bool]\\$areEqual\t=\t\\$itemsCommon.Count\t-eq\t$${3:list1}Unique.Count  #   or $${4:list2}Unique.Count, no matter",
+			"\t\t}",
+			"\t}",
+			"\treturn\t\\$areEqual",
 			"}"
 		]
 	}
