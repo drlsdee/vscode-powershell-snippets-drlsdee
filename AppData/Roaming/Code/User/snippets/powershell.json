@@ -412,29 +412,125 @@
 		"description": "\"Try\" from selection, \"Catch\" from clipboard",
 		"body": [
 			"try\t{",
-			"\t${1:${TM_SELECTED_TEXT:<#The action that could throw a terminating error#>}}",
+			"\t${0:${TM_SELECTED_TEXT:<#The action that could throw a terminating error#>}}",
 			"}",
 			"catch\t{",
-			"\t${0:$CLIPBOARD}",
+			"\t${1:$CLIPBOARD}",
 			"}"
 		]
 	},
 	"If-Clipboard":{
-		"prefix": "if-clip",
+		"prefix": [
+			"if",
+			"if-clip",
+			"clip-if"
+		],
 		"description": "Action from selection, condition from clipboard",
 		"body": [
 			"if\t(${2:${CLIPBOARD:\\$true<#The condition that should be met in order to perform the action below#>}})\t{",
-			"\t${1:${TM_SELECTED_TEXT:<#The action to do if the condition is met#>}}",
+			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the condition is met#>}}",
+			"}"
+		]
+	},
+	"If-Null":{
+		"prefix": [
+			"if",
+			"if-null"
+		],
+		"description": "Compares clipboard with null, action from selection",
+		"body": [
+			"if\t(\\$null\t-${3|eq,ne|}\t$${2:$CLIPBOARD})\t{",
+			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the $${2:$CLIPBOARD} is equal to null#>}}",
+			"}"
+		]
+	},
+	"If-String-Empty":{
+		"prefix": [
+			"if",
+			"if-string-empty",
+			"if-empty"
+		],
+		"description": "Ensures that clipboard is empty string, action from selection",
+		"body": [
+			"if\t(${3| ,-not |}[string]::IsNullOrEmpty($${2:$CLIPBOARD}))\t{",
+			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the $${2:$CLIPBOARD} is an empty string#>}}",
 			"}"
 		]
 	},
 	"ElseIf-Clipboard":{
-		"prefix": "elseif-clip",
+		"prefix": [
+			"elseif",
+			"elif",
+			"elseif-clip",
+			"elif-clip",
+			"clip-elseif",
+			"clip-elif"
+		],
 		"description": "Action from selection, condition from clipboard",
 		"body": [
 			"elseif\t(${2:${CLIPBOARD:\\$true<#The next condition that should be met in order to perform the action below#>}})\t{",
-			"\t${1:${TM_SELECTED_TEXT:<#The action to do if the condition is met#>}}",
+			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the condition is met#>}}",
 			"}"
+		]
+	},
+	"For-In-List":{
+		"prefix": [
+			"for",
+			"for-clip",
+			"clip-for"
+		],
+		"description": "\"For\" loop, the array name from clipboard, typename declared",
+		"body": [
+			"for\t($${1:indexInput} = 0; $${1:indexInput} -lt $${2:${CLIPBOARD:InputObject}}.Count; $${1:indexInput}++)\t{",
+			"\t[${4:System.Object}]$${3:objectCurrent}\t=\t$${2:InputObject}[$${1:indexInput}]",
+			"\t${0:<#Do something with $${3:objectCurrent}#>}",
+			"}"
+		]
+	},
+	"ForR-In-List":{
+		"prefix": [
+			"forr",
+			"forr-clip",
+			"clip-forr"
+		],
+		"description": "Reverse \"For\" loop, the array name from clipboard, typename declared",
+		"body": [
+			"for\t($${1:indexInput} = $${2:${CLIPBOARD:InputObject}}.Count - 1; $${1:indexInput} -ge 0; $${1:indexInput}--)\t{",
+			"\t[${4:System.Object}]$${3:objectCurrent}\t=\t$${2:InputObject}[$${1:indexInput}]",
+			"\t${0:<#Do something with $${3:objectCurrent}#>}",
+			"}"
+		]
+	},
+	"String-Empty":{
+		"prefix": [
+			"string-empty",
+			"string-null",
+			"empty-string",
+			"null-string"
+		],
+		"description": "Calls the method String.IsNullOrEmpty(string) around the selected text",
+		"body": "[string]::IsNullOrEmpty(${0:$TM_SELECTED_TEXT})"
+	},
+	"String-Space":{
+		"prefix": [
+			"string-space",
+			"string-null",
+			"space-string",
+			"null-string"
+		],
+		"description": "Calls the method String.IsNullOrWhiteSpace(string) around the selected text",
+		"body": "[string]::IsNullOrWhiteSpace(${0:$TM_SELECTED_TEXT})"
+	},
+	"Enumerate-FileSystem":{
+		"prefix": [
+			"enumerate-files",
+			"enumerate-dirs",
+			"list-files",
+			"list-dirs"
+		],
+		"description": "Calls the System.IO.Directory methods EnumerateFiles(), EnumerateDirectories() or EnumerateFileSystemEntries() in the selected path.",
+		"body": [
+			"[System.${5|String,IO.DirectoryInfo,IO.FileInfo,IO.FileSystemInfo|}[]]$${6:filesFound}\t=\t[System.IO.Directory]::${4|EnumerateDirectories,EnumerateFiles,EnumerateFileSystemEntries|}(${1:$TM_SELECTED_TEXT},${2:'*.*'},[System.IO.SearchOption]::${3|AllDirectories,TopDirectoryOnly|})"
 		]
 	}
 }
