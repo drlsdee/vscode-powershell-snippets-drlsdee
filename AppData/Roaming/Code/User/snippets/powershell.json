@@ -58,15 +58,26 @@
 		"body": "#Requires -RunAsAdministrator"
 	},
 	"Class": {
-	  "prefix": "class",
-	  "description": "A blueprint used to create instances of objects at run time. More: Get-Help about_Classes",
-	  "body": [
-		"class ${1:ClassName} {",
-		"\t${0:${TM_SELECTED_TEXT:<#Define the class. Try constructors, properties, or methods #>}}",
-		"\t#\tConstructor:\tdefault (no arguments)",
-		"\t${1:ClassName}(){}",
-		"}"
-	  ]
+		"prefix": "class",
+		"description": "A blueprint used to create instances of objects at run time. More: Get-Help about_Classes",
+		"body": [
+			"class\t${1:ClassName}\t{",
+			"\t${0:${TM_SELECTED_TEXT:<#Define the class. Try constructors, properties, or methods #>}}",
+			"\t#\tConstructor:\tdefault (no arguments)",
+			"\t${1:ClassName}(){}",
+			"}"
+		]
+	},
+	"Class Inherited":{
+		"prefix": "class-inherited",
+		"description": "A class that inherits from another class (the name of the parent class is taken from the clipboard)",
+		"body": [
+			"class\t${1:ClassName} : ${2:${CLIPBOARD:ParentClass}}\t{",
+			"\t${0:${TM_SELECTED_TEXT:<#Define the class. Try constructors, properties, or methods #>}}",
+			"\t#\tConstructor:\tdefault (no arguments)",
+			"\t${1:ClassName}(){}",
+			"}"
+		]
 	},
 	"Class Property - Type from clipboard": {
 		"prefix": "class-property-clip-typename",
@@ -98,8 +109,8 @@
 			"\tparam (",
 			"\t\t#\t${6:Parameter help description}",
 			"\t\t[Parameter(",
-			"\t\t\tMandatory\t=\t$$true,",
-			"\t\t\tValueFromPipeline\t=\t$$true,",
+			"\t\t\tMandatory\t=\t\\$true,",
+			"\t\t\tValueFromPipeline\t=\t\\$true,",
 			"\t\t\tValueFromPipelineByPropertyName\t=\t$${5|true,false|}",
 			"\t\t)]",
 			"\t\t[${4:System.Object}[]]",
@@ -112,7 +123,7 @@
 			"\t",
 			"\tprocess {",
 			"\t\tforeach ($${7:objectCurrent} in $${3:InputObject}) {",
-			"\t\t\t#\tDo something with the $${7:objectCurrent} $UUID",
+			"\t\t\t#\tDo something with the $${7:objectCurrent}",
 			"\t\t\t$0",
 			"\t\t}",
 			"\t}",
@@ -135,8 +146,8 @@
 			"\tparam (",
 			"\t\t#\t${6:Parameter help description}",
 			"\t\t[Parameter(",
-			"\t\t\tMandatory\t=\t$$true,",
-			"\t\t\tValueFromPipeline\t=\t$$true,",
+			"\t\t\tMandatory\t=\t\\$true,",
+			"\t\t\tValueFromPipeline\t=\t\\$true,",
 			"\t\t\tValueFromPipelineByPropertyName\t=\t$${5|true,false|}",
 			"\t\t)]",
 			"\t\t[${4:System.Object}[]]",
@@ -148,14 +159,14 @@
 			"\t}",
 			"\t",
 			"\tprocess {",
-			"\t\tforeach ($$objectCurrent in $${3:InputObject}) {",
-			"\t\t\t#\tCheck if the $$objectCurrent is unique",
-			"\t\t\t[bool]$$isUnique\t=\t-not $${7:objectCollector}.Contains($$objectCurrent)",
-			"\t\t\tif\t(-not $$isUnique)\t{",
+			"\t\tforeach ($${8:objectCurrent} in $${3:InputObject}) {",
+			"\t\t\t#\tCheck if the $${8:objectCurrent} is unique",
+			"\t\t\t[bool]\\$is${8:objectCurrent}Unique\t=\t-not $${7:objectCollector}.Contains($${8:objectCurrent})",
+			"\t\t\tif\t(-not \\$is${8:objectCurrent}Unique)\t{",
 			"\t\t\t\tcontinue",
 			"\t\t\t}",
-			"\t\t\t$${7:objectCollector}.Add($$objectCurrent)",
-			"\t\t\t#\tDo something with the $$objectCurrent",
+			"\t\t\t$${7:objectCollector}.Add($${8:objectCurrent})",
+			"\t\t\t#\tDo something with the $${8:objectCurrent}",
 			"\t\t\t$0",
 			"\t\t}",
 			"\t}",
@@ -175,11 +186,11 @@
 		"body": [
 			"#\tIf this parameter is specified, the cmdlet processes only unique objects.",
 			"[Parameter(",
-			"\tMandatory\t=\t$$false,",
-			"\tValueFromPipeline\t=\t$$false",
+			"\tMandatory\t=\t\\$false,",
+			"\tValueFromPipeline\t=\t\\$false",
 			")]",
 			"[switch]",
-			"$$Unique"
+			"\\$Unique"
 		]
 	},
 	"Parameter \"PassThru\"": {
@@ -191,11 +202,11 @@
 		"body": [
 			"#\tIf this parameter is specified, the cmdlet returns the processed objects. Normally the cmdlet does not returns anything.",
 			"[Parameter(",
-			"\tMandatory\t=\t$$false,",
-			"\tValueFromPipeline\t=\t$$false",
+			"\tMandatory\t=\t\\$false,",
+			"\tValueFromPipeline\t=\t\\$false",
 			")]",
 			"[switch]",
-			"$$PassThru"
+			"\\$PassThru"
 		]
 	},
 	"Module Manifest":{
@@ -209,7 +220,7 @@
 			"\tCompanyName\t\t\t\t=\t'${3:Contoso Inc.}'",
 			"\tModuleVersion\t\t\t=\t'${4:0.0.0.0}'",
 			"\tGUID\t\t\t\t\t=\t'$UUID'",
-			"\tCopyright\t\t\t\t=\t'$CURRENT_YEAR ${3:Contoso Inc.}}'",
+			"\tCopyright\t\t\t\t=\t'$CURRENT_YEAR ${3:Contoso Inc.}'",
 			"\tDescription\t\t\t\t=\t'${5:Enter the module description here}'",
 			"\tPowerShellVersion\t\t=\t'${6:5.1}'",
 			"\t#CompatiblePSEditions\t=\t${7|'Desktop','Core',@('Desktop'\\,'Core')|}",
@@ -250,10 +261,33 @@
 		"description": "Definition of message templates used for warnings, details, and debugging.",
 		"body": [
 			"#region\t\t${1:DeclareMessages}",
-			"[string]$${2:myName}\t=\t'{0}' -f $$MyInvocation.InvocationName",
+			"[string]$${2:myName}\t=\t'{0}' -f \\$MyInvocation.InvocationName",
 			"[string]$${3:msgError}\t=\t'{0} The operation \"{1}\"; the object: \"{2}\"; exception: \"{3}\"; message: \"{4}\"; inner exception: \"{5}\"'",
-			"#\t$${3:msgError}\t-f\t$${2:myName}, $$operationName, $$objectName, $$_.Exception.GetType().FullName, $$_.Exception.Message, $$_.Exception.InnerException",
+			"#\t$${3:msgError}\t-f\t$${2:myName}, \\$operationName, \\$objectName, \\$_.Exception.GetType().FullName, \\$_.Exception.Message, \\$_.Exception.InnerException",
 			"#endregion\t${1:DeclareMessages}"
+		]
+	},
+	"Verbose Message Try-Catch":{
+		"prefix": [
+			"message-catch",
+			"msg-catch"
+		],
+		"description": "Verbose message in the \"Catch\" block",
+		"body": [
+			"[string]\\$msgErr${3:Operation}\t=\t$${5:msgError}\t-f\t$${6:myName}, $${1:operationName}, $${2:objectName}, \\$_.Exception.GetType().FullName, \\$_.Exception.Message, \\$_.Exception.InnerException",
+			"Write-${4|Debug,Verbose,Warning|}\t-Message\t\\$msgErr${3:Operation}$0"
+		]
+	},
+	"Verbose Message From Pattern":{
+		"prefix": [
+			"message-verbose-pattern",
+			"message-from-pattern",
+			"msg-from-pattern"
+		],
+		"description": "Verbose message from the pattern, with String.Format. Copy the pattern name without \"$\"!",
+		"body": [
+			"[string]\\$${CLIPBOARD}${1|Result,Current,Final|}\t=\t$${CLIPBOARD}\t-f\t$${2:myName}$0",
+			"Write-${3|Debug,Verbose,Warning|}\t-Message\t\\$${CLIPBOARD}${1|Result,Current,Final|}"
 		]
 	},
 	"Function Help": {
@@ -277,6 +311,7 @@
 			".OUTPUTS",
 			"\tThe .NET type of the objects that the cmdlet returns. You can also include a description of the returned objects.",
 			".NOTES",
+			"\t${2:A longer description of the function, its purpose, common use cases, etc.}",
 			"\t${3:Information or caveats about the function e.g. 'This function is not supported in Linux'}",
 			".LINK",
 			"\t${4:Specify a URI to a help page, this will show when Get-Help -Online is used.}",
@@ -314,24 +349,24 @@
 			"#\tMethod:\toverloads Equals() and returns \"True\" if all property values of the input object are equal to the same properties of this object",
 			"[bool]",
 			"Equals(",
-			"\t[System.Object]$$obj",
+			"\t[System.Object]\\$obj",
 			")\t{",
-			"\t[string[]]$$keysInput\t=\t$$obj.psobject.properties.name",
-			"\t[string[]]$$keysMine\t\t=\t\\$this.psobject.properties.name",
-			"\tif\t(($$keysInput.Count\t-gt\t0)\t-and\t($$keysMine.Count\t-gt\t0))\t{",
-			"\t\t[string[]]$$keysCommon\t=\t[System.Linq.Enumerable]::Intersect($$keysInput,$$keysMine)",
+			"\t[string[]]\\$keysInput\t=\t\\$obj.psobject.properties.name",
+			"\t[string[]]\\$keysMine\t\t=\t\\$this.psobject.properties.name",
+			"\tif\t((\\$keysInput.Count\t-gt\t0)\t-and\t(\\$keysMine.Count\t-gt\t0))\t{",
+			"\t\t[string[]]\\$keysCommon\t=\t[System.Linq.Enumerable]::Intersect(\\$keysInput,\\$keysMine)",
 			"\t}",
 			"\telse\t{",
-			"\t\t[string[]]$$keysCommon\t=\t@()",
+			"\t\t[string[]]\\$keysCommon\t=\t@()",
 			"\t}\t",
-			"\t[bool]$$isObjectEqual\t=\t$$keysCommon.Count\t-gt\t0",
-			"\tforeach\t($$keyCurrent\tin\t$$keysCommon)\t{",
-			"\t\t[bool]$$isObjectEqual\t=\t\\$this.$$keyCurrent\t-eq\t$$obj.$$keyCurrent",
-			"\t\tif\t(-not\t$$isObjectEqual)\t{",
+			"\t[bool]\\$isObjectEqual\t=\t\\$keysCommon.Count\t-gt\t0",
+			"\tforeach\t(\\$keyCurrent\tin\t\\$keysCommon)\t{",
+			"\t\t[bool]\\$isObjectEqual\t=\t\\$this.\\$keyCurrent\t-eq\t\\$obj.\\$keyCurrent",
+			"\t\tif\t(-not\t\\$isObjectEqual)\t{",
 			"\t\t\tbreak",
 			"\t\t}",
 			"\t}",
-			"\treturn\t$$isObjectEqual",
+			"\treturn\t\\$isObjectEqual",
 			"}"
 		]
 	},
@@ -369,6 +404,36 @@
 			"\t\t}",
 			"\t}",
 			"\treturn\t\\$areEqual",
+			"}"
+		]
+	},
+	"Try-Catch-Clipboard":{
+		"prefix": "try-catch-clip",
+		"description": "\"Try\" from selection, \"Catch\" from clipboard",
+		"body": [
+			"try\t{",
+			"\t${1:${TM_SELECTED_TEXT:<#The action that could throw a terminating error#>}}",
+			"}",
+			"catch\t{",
+			"\t${0:$CLIPBOARD}",
+			"}"
+		]
+	},
+	"If-Clipboard":{
+		"prefix": "if-clip",
+		"description": "Action from selection, condition from clipboard",
+		"body": [
+			"if\t(${2:${CLIPBOARD:\\$true<#The condition that should be met in order to perform the action below#>}})\t{",
+			"\t${1:${TM_SELECTED_TEXT:<#The action to do if the condition is met#>}}",
+			"}"
+		]
+	},
+	"ElseIf-Clipboard":{
+		"prefix": "elseif-clip",
+		"description": "Action from selection, condition from clipboard",
+		"body": [
+			"elseif\t(${2:${CLIPBOARD:\\$true<#The next condition that should be met in order to perform the action below#>}})\t{",
+			"\t${1:${TM_SELECTED_TEXT:<#The action to do if the condition is met#>}}",
 			"}"
 		]
 	}
