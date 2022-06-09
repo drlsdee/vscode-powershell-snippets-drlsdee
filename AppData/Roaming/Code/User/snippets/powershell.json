@@ -79,13 +79,16 @@
 			"}"
 		]
 	},
-	"Class Property - Type from clipboard": {
-		"prefix": "class-property-clip-typename",
-		"description": "Copy the type name of the class property to the clipboard.",
+	"Class Property - Type from clipboard, name from selection": {
+		"prefix": [
+			"class-property-type-clip-name-sel",
+			"type-clip-name-sel-class-property"
+		],
+		"description": "Selected text is the property name, clipboard is the property typename",
 		"body": [
-			"#\tProperty:\tstores the ${1:PropertyName} $0",
-			"[$CLIPBOARD]",
-			"$${1:PropertyName}"
+			"#\tProperty:\tstores the ${1:${TM_SELECTED_TEXT:PropertyName}}$0",
+			"[${2:${CLIPBOARD:System.Object}}]",
+			"${1:${TM_SELECTED_TEXT:PropertyName}}"
 		]
 	},
 	"Class Property - Name from clipboard": {
@@ -223,7 +226,7 @@
 			"\tCopyright\t\t\t\t=\t'$CURRENT_YEAR ${3:Contoso Inc.}'",
 			"\tDescription\t\t\t\t=\t'${5:Enter the module description here}'",
 			"\tPowerShellVersion\t\t=\t'${6:5.1}'",
-			"\t#CompatiblePSEditions\t=\t${7|'Desktop','Core',@('Desktop'\\,'Core')|}",
+			"\tCompatiblePSEditions\t=\t${7|'Desktop','Core',@('Desktop'\\,'Core')|}",
 			"\t#\tList of required assemblies and modules",
 			"\t#RequiredAssemblies\t\t=\t@()",
 			"\t#RequiredModules\t\t=\t@()",
@@ -261,7 +264,7 @@
 		"description": "Definition of message templates used for warnings, details, and debugging.",
 		"body": [
 			"#region\t\t${1:DeclareMessages}",
-			"[string]$${2:myName}\t=\t'{0}' -f \\$MyInvocation.InvocationName",
+			"[string]$${2:myName}\t=\t'[{0}]:'\t-f\t\\$MyInvocation.InvocationName",
 			"[string]$${3:msgError}\t=\t'{0} The operation \"{1}\"; the object: \"{2}\"; exception: \"{3}\"; message: \"{4}\"; inner exception: \"{5}\"'",
 			"#\t$${3:msgError}\t-f\t$${2:myName}, \\$operationName, \\$objectName, \\$_.Exception.GetType().FullName, \\$_.Exception.Message, \\$_.Exception.InnerException",
 			"#endregion\t${1:DeclareMessages}"
@@ -331,7 +334,11 @@
 		]
 	},
 	"ToString as JSON":{
-		"prefix": "class-method-tostring-json",
+		"prefix": [
+			"tostring",
+			"tostring-json",
+			"class-method-tostring-json"
+		],
 		"description": "Method: Overloads ToString() and returns this object as a JSON string.",
 		"body": [
 			"#\tMethod:\toverloads ToString() and returns this object as a JSON string",
@@ -342,11 +349,31 @@
 			"}"
 		]
 	},
-	"Equals By All Properties":{
-		"prefix": "class-method-equals-all",
-		"description": "Method: overloads Equals() and returns \"True\" if all property values of the input object are equal to the same properties of this object",
+	"ToString Single Property":{
+		"prefix": [
+			"tostring",
+			"tostring-property",
+			"class-method-tostring-property"
+		],
+		"description": "Method: Overloads ToString() and returns the string value of the specified property of this instance",
 		"body": [
-			"#\tMethod:\toverloads Equals() and returns \"True\" if all property values of the input object are equal to the same properties of this object",
+			"#\tMethod:\toverloads ToString() and returns the string value of the \"${1:$CLIPBOARD}\" property of this instance",
+			"[string]",
+			"ToString(){",
+			"\t[string]\\$outputString\t=\t\\$this.${1:$CLIPBOARD}",
+			"\treturn\t\\$outputString",
+			"}"
+		]
+	},
+	"Equals By All Properties":{
+		"prefix": [
+			"equals",
+			"equals-prop",
+			"class-method-equals-property"
+		],
+		"description": "Method: overloads Equals() and returns \"True\" if all property values of this object are equal to the same properties of the input object",
+		"body": [
+			"#\tMethod:\toverloads Equals() and returns \"True\" if all property values of this object are equal to the same properties of the input object",
 			"[bool]",
 			"Equals(",
 			"\t[System.Object]\\$obj",
@@ -361,6 +388,44 @@
 			"\t}\t",
 			"\t[bool]\\$isObjectEqual\t=\t\\$keysCommon.Count\t-gt\t0",
 			"\tforeach\t(\\$keyCurrent\tin\t\\$keysCommon)\t{",
+			"\t\t[bool]\\$isObjectEqual\t=\t\\$this.\\$keyCurrent\t-eq\t\\$obj.\\$keyCurrent",
+			"\t\tif\t(-not\t\\$isObjectEqual)\t{",
+			"\t\t\tbreak",
+			"\t\t}",
+			"\t}",
+			"\treturn\t\\$isObjectEqual",
+			"}"
+		]
+	},
+	"Equals Types and Properties":{
+		"prefix": [
+			"equals",
+			"equals-types-prop",
+			"class-method-equals-property"
+		],
+		"description": "Method: overloads Equals() and returns \"True\" if typenames of this object overlap with typenames of the input object and their common properties have the same values",
+		"body": [
+			"#\tMethod:\toverloads Equals() and returns \"True\" if typenames of this object overlap with typenames of the input object and their common properties have the same values",
+			"[bool]",
+			"Equals(",
+			"\t[System.Object]\\$obj",
+			")\t{",
+			"\t[string[]]\\$typeNamesMine\t=\t\\$this.psobject.TypeNames\t-ne\t'System.Object'",
+			"\t[string[]]\\$typeNamesInput\t=\t\\$obj.psobject.TypeNames\t\t-ne\t'System.Object'",
+			"\t[string[]]\\$typeNamesCommon\t=\t[System.Linq.Enumerable]::Intersect(\\$typeNamesMine,\\$typeNamesInput)",
+			"\tif\t(\\$typeNamesCommon.Count\t-eq\t0)\t{",
+			"\t\treturn\t\\$false",
+			"\t}",
+			"\t[string[]]\\$keysInput\t\t=\t\\$obj.psobject.properties.name",
+			"\t[string[]]\\$keysMine\t\t\t=\t\\$this.psobject.properties.name",
+			"\tif\t((\\$keysInput.Count\t-gt\t0)\t-and\t(\\$keysMine.Count\t-gt\t0))\t{",
+			"\t\t[string[]]\\$keysCommon\t=\t[System.Linq.Enumerable]::Intersect(\\$keysInput,\\$keysMine)",
+			"\t}",
+			"\telse\t{",
+			"\t\t[string[]]\\$keysCommon\t=\t@()",
+			"\t}\t",
+			"\t[bool]\\$isObjectEqual\t\t=\t\\$keysCommon.Count\t-gt\t0",
+			"\tforeach\t(\\$keyCurrent\t\tin\t\\$keysCommon)\t{",
 			"\t\t[bool]\\$isObjectEqual\t=\t\\$this.\\$keyCurrent\t-eq\t\\$obj.\\$keyCurrent",
 			"\t\tif\t(-not\t\\$isObjectEqual)\t{",
 			"\t\t\tbreak",
@@ -427,7 +492,7 @@
 		],
 		"description": "Action from selection, condition from clipboard",
 		"body": [
-			"if\t(${2:${CLIPBOARD:\\$true<#The condition that should be met in order to perform the action below#>}})\t{",
+			"if\t(${1:${CLIPBOARD:\\$true<#The condition that should be met in order to perform the action below#>}})\t{",
 			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the condition is met#>}}",
 			"}"
 		]
@@ -439,8 +504,8 @@
 		],
 		"description": "Compares clipboard with null, action from selection",
 		"body": [
-			"if\t(\\$null\t-${3|eq,ne|}\t$${2:$CLIPBOARD})\t{",
-			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the $${2:$CLIPBOARD} is equal to null#>}}",
+			"if\t(\\$null\t-${2|eq,ne|}\t${1:$CLIPBOARD})\t{",
+			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the ${1:$CLIPBOARD} is equal to null#>}}",
 			"}"
 		]
 	},
@@ -452,8 +517,20 @@
 		],
 		"description": "Ensures that clipboard is empty string, action from selection",
 		"body": [
-			"if\t(${3| ,-not |}[string]::IsNullOrEmpty($${2:$CLIPBOARD}))\t{",
-			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the $${2:$CLIPBOARD} is an empty string#>}}",
+			"if\t(${2| ,-not |}[string]::IsNullOrEmpty(${1:$CLIPBOARD}))\t{",
+			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the ${1:$CLIPBOARD} is an empty string#>}}",
+			"}"
+		]
+	},
+	"If-Count":{
+		"prefix": [
+			"if",
+			"if-count"
+		],
+		"description": "Evaluates items count of the variable from clipboard",
+		"body": [
+			"if\t(${1:$CLIPBOARD}.Count\t-${2|eq,ne,gt,ge,lt,le|}\t${3:0})\t{",
+			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the ${1:$CLIPBOARD} -${2|eq,ne,gt,ge,lt,le|} ${3:0}#>}}",
 			"}"
 		]
 	},
