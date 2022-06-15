@@ -522,15 +522,16 @@
 			"}"
 		]
 	},
-	"If-Count":{
+	"If-Count-Length":{
 		"prefix": [
 			"if",
+			"if-length",
 			"if-count"
 		],
-		"description": "Evaluates items count of the variable from clipboard",
+		"description": "Evaluates the items count of the array or the string length in the variable from clipboard",
 		"body": [
-			"if\t(${1:$CLIPBOARD}.Count\t-${2|eq,ne,gt,ge,lt,le|}\t${3:0})\t{",
-			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the ${1:$CLIPBOARD} -${2|eq,ne,gt,ge,lt,le|} ${3:0}#>}}",
+			"if\t(${1:$CLIPBOARD}.${2|Count,Length|}\t-${3|eq,ne,gt,ge,lt,le|}\t${4:0})\t{",
+			"\t${0:${TM_SELECTED_TEXT:<#The action to do if the ${1:$CLIPBOARD}.${2|Count,Length|} -${3|eq,ne,gt,ge,lt,le|} ${4:0}#>}}",
 			"}"
 		]
 	},
